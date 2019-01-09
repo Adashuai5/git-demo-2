@@ -1,3 +1,12 @@
+function add(a, b) {
+    return a + b;
+}
+var Add1 = add(1, 2);
+var Add2 = add('1', '2');
+var Add3 = add(1, '2');
+console.log(Add1);
+console.log(Add2);
+console.log(Add3);
 function selectSort(arr) {
     for (var i = 0; i < arr.length - 1; i++) {
         var minIndex = i;
