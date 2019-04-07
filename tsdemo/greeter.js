@@ -7,6 +7,7 @@ var Student = /** @class */ (function () {
     }
     return Student;
 }());
+
 function greeter(person) {
     return "Hello, " + person.firstName + " " + person.lastName;
 }
