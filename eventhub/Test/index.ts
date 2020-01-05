@@ -1,12 +1,14 @@
 import EventHub from '../src/index'
 
-let test1 = (message) => {
+type TestCache = (message: string) => void
+
+let test1: TestCache = message => {
   const eventHub = new EventHub()
   console.assert(eventHub instanceof Object === true, 'eventHub 是对象')
   console.log(message)
 }
 
-let test2 = (message) => {
+let test2: TestCache = message => {
   const eventHub = new EventHub()
   let called = false
   eventHub.on('xxx', y => {
@@ -20,7 +22,7 @@ let test2 = (message) => {
   }, 1000)
 }
 
-let test3 = (message) => {
+let test3: TestCache = message => {
   const eventHub = new EventHub()
   let called = false
   const fn1 = () => {

@@ -1,13 +1,13 @@
 class EventHub {
-  private catch = {}
-  on(eventName, fn) {
+  private catch: { [key: string]: Array<(data: unknown) => void> } = {}
+  on(eventName: string, fn: (data: unknown) => void) {
     this.catch[eventName] = this.catch[eventName] || []
     this.catch[eventName].push(fn)
   }
-  emit(eventName, data?) {
+  emit(eventName: string, data?: unknown) {
     ;(this.catch[eventName] || []).forEach(fn => fn(data))
   }
-  off(eventName, fn) {
+  off(eventName: string, fn: (data: unknown) => void) {
     let index = this.catch[eventName].indexOf(fn)
     if (index === -1) return
     this.catch[eventName].splice(index, 1)
