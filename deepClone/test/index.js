@@ -53,7 +53,7 @@ describe('deepClone', () => {
       assert.deepEqual(a, a1)
     })
     it('能够复制函数', () => {
-      const a = function() {
+      const a = function () {
         return 1
       }
       a.xxx = { yyy: { zzz: 1 } }
@@ -63,6 +63,14 @@ describe('deepClone', () => {
       assert(a.xxx.yyy !== a1.xxx.yyy)
       assert(a.xxx !== a1.xxx)
       assert(a() === a1())
+    })
+    it('能够复制环', () => {
+      const a = { name: 'ada', child: { name: 'little ada' } }
+      a.self = a
+      const a1 = deepClone(a)
+      assert(a !== a1)
+      assert(a.name === a1.name)
+      assert(a.self !== a1.self)
     })
   })
 })

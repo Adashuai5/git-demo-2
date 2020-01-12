@@ -1,29 +1,38 @@
+let cache = []
 function deepClone(source) {
   if (source instanceof Object) {
-    if (source instanceof Array) {
-      const array = new Array()
+    let cachedDist = findCache(source)
+    if (cachedDist) {
+      return cachedDist
+    } else {
+      let dist
+      if (source instanceof Array) {
+        dist = new Array()
+      } else if (source instanceof Function) {
+        // 通过调用自己本身获取 this 和 参数
+        dist = function () {
+          return source.apply(this, arguments)
+        }
+      } else {
+        dist = new Object()
+      }
+      cache.push([source, dist])
       for (let key in source) {
-        array[key] = deepClone(source[key])
+        dist[key] = deepClone(source[key])
       }
-      return array
+      return dist
     }
-    if (source instanceof Function) {
-      // 通过调用自己本身获取 this 和 参数
-      const fn = function() {
-        return source.apply(this, arguments)
-      }
-      for (let key in source) {
-        fn[key] = deepClone(source[key])
-      }
-      return fn
-    }
-    const obj = new Object()
-    for (let key in source) {
-      obj[key] = deepClone(source[key])
-    }
-    return obj
   }
   return source
+}
+
+function findCache(source) {
+  for (let i = 0; i < cache.length; i++) {
+    if (cache[i][0] === source) {
+      return cache[i][1]
+    }
+  }
+  return undefined
 }
 
 module.exports = deepClone
