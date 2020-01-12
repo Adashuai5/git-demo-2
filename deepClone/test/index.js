@@ -72,5 +72,17 @@ describe('deepClone', () => {
       assert(a.name === a1.name)
       assert(a.self !== a1.self)
     })
+    // xit 表示不测试，我们不考虑爆栈的情况
+    xit('不会爆栈', () => {
+      const a = { child: null }
+      let b = a
+      for (let i = 0; i < 5458; i++) {
+        b.child = { child: null }
+        b = b.child
+      }
+      const a1 = deepClone(a)
+      assert(a !== a1)
+      assert(a.child !== a1.child)
+    })
   })
 })
