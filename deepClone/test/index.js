@@ -116,5 +116,63 @@ describe("deepClone", () => {
       assert(a.xxx.yyy !== a1.xxx.yyy);
       assert(a.xxx !== a1.xxx);
     });
+
+    it("很复杂的对象", () => {
+      const a = {
+        n: NaN,
+        n2: Infinity,
+        s: "",
+        bool: false,
+        null: null,
+        u: undefined,
+        sym: Symbol(),
+        o: {
+          n: NaN,
+          n2: Infinity,
+          s: "",
+          bool: false,
+          null: null,
+          u: undefined,
+          sym: Symbol()
+        },
+        array: [
+          {
+            n: NaN,
+            n2: Infinity,
+            s: "",
+            bool: false,
+            null: null,
+            u: undefined,
+            sym: Symbol()
+          }
+        ]
+      };
+      const a1 = deepClone(a);
+      assert(a !== a1);
+      assert.isNaN(a1.n);
+      assert(a.n2 === a1.n2);
+      assert(a.s === a1.s);
+      assert(a.bool === a1.bool);
+      assert(a.null === a1.null);
+      assert(a.u === a1.u);
+      assert(a.sym === a1.sym);
+      assert(a.o !== a1.o);
+      assert.isNaN(a1.o.n);
+      assert(a.o.n2 === a1.o.n2);
+      assert(a.o.s === a1.o.s);
+      assert(a.o.bool === a1.o.bool);
+      assert(a.o.null === a1.o.null);
+      assert(a.o.u === a1.o.u);
+      assert(a.o.sym === a1.o.sym);
+      assert(a.array !== a1.array);
+      assert(a.array[0] !== a1.array[0]);
+      assert.isNaN(a1.array[0].n);
+      assert(a.array[0].n2 === a1.array[0].n2);
+      assert(a.array[0].s === a1.array[0].s);
+      assert(a.array[0].bool === a1.array[0].bool);
+      assert(a.array[0].null === a1.array[0].null);
+      assert(a.array[0].u === a1.array[0].u);
+      assert(a.array[0].sym === a1.array[0].sym);
+    });
   });
 });
