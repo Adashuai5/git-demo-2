@@ -84,5 +84,27 @@ describe('deepClone', () => {
       assert(a !== a1)
       assert(a.child !== a1.child)
     })
+    it('能够复制正则', () => {
+      // new RegExp(source, flags)
+      const a = new RegExp('hi\\d+', 'gi')
+      a.xxx = { yyy: { zzz: 1 } }
+      const a1 = deepClone(a)
+      assert(a !== a1)
+      assert(a.source === a1.source)
+      assert(a.flags === a1.flags)
+      assert(a.xxx.yyy.zzz === a1.xxx.yyy.zzz)
+      assert(a.xxx.yyy !== a1.xxx.yyy)
+      assert(a.xxx !== a1.xxx)
+    })
+    it('能够复制日期', () => {
+      const a = new Date()
+      a.xxx = { yyy: { zzz: 1 } }
+      const a1 = deepClone(a)
+      assert(a !== a1)
+      assert(a.getTime() === a1.getTime())
+      assert(a.xxx.yyy.zzz === a1.xxx.yyy.zzz)
+      assert(a.xxx.yyy !== a1.xxx.yyy)
+      assert(a.xxx !== a1.xxx)
+    })
   })
 })
