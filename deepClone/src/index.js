@@ -21,7 +21,8 @@ function deepClone(source) {
         dist = new Object()
       }
       cache.push([source, dist])
-      for (let key in source) {
+      // 通过 hasOwnProperty 判断 key 是否为 source 自身属性
+      for (let key in source) if (source.hasOwnProperty(key)) {
         dist[key] = deepClone(source[key])
       }
       return dist
