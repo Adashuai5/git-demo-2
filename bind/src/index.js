@@ -1,10 +1,15 @@
 // ES6
-
 function _bind(callThis, ...args) {
   const fn = this;
-  return function() {
-    return fn.call(callThis, ...args);
-  };
+  function resultFn(...args2) {
+    return fn.call(
+      this.__proto__ === resultFn.prototype ? this : callThis,
+      ...args,
+      ...args2
+    );
+  }
+  resultFn.prototype = fn.prototype;
+  return resultFn;
 }
 
 // ES3
@@ -21,8 +26,8 @@ function bind(callThis) {
   };
 }
 
-module.exports = bind;
+module.exports = _bind;
 
 if (!Function.prototype.bind) {
-  Function.prototype.bind = bind;
+  Function.prototype.bind = _bind;
 }
