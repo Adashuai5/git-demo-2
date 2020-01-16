@@ -74,7 +74,8 @@ function test6(message) {
   let newFn = new fn1();
   console.assert(newFn.p1 === "x");
   console.assert(newFn.p2 === "y");
-  console.assert(newFn.__proto__ === fn.prototype);
+  // console.assert(newFn.__proto__ === fn.prototype);
+  console.assert(fn.prototype.isPrototypeOf(newFn));
   console.assert(typeof newFn.sayHi === "function");
 }
 
