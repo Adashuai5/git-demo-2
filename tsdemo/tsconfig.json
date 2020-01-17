@@ -1,13 +1,5 @@
 {
   "compilerOptions": {
-      "module": "commonjs",
-      "noImplicitAny": true,
-      "removeComments": true,
-      "preserveConstEnums": true,
-      "sourceMap": true,
-      "noEmitOnError": true
-  },
-  "files": [
-      "hello.ts",
-  ]
+    "lib": ["es2015", "es2016", "es2017", "es2018", "DOM"] // 增加不支持的版本
+  }
 }
