@@ -3,9 +3,10 @@
     public container: HTMLDivElement;
     private output: HTMLDivElement;
     private span: HTMLSpanElement;
-    public n1: number;
-    public operation: string;
-    public n2: number;
+    public n1: string = "";
+    public operator: string = "";
+    public n2: string = "";
+    public result: string = "";
 
     constructor() {
       this.createContainer();
@@ -65,41 +66,61 @@
         if (event.target instanceof HTMLButtonElement) {
           let buttonText = event.target.textContent;
 
-          if ("0123456789".indexOf(buttonText) >= 0) {
-            if (this.operation) {
-              this.n2 = this.n2
-                ? parseInt(this.n2 + buttonText)
-                : parseInt(buttonText);
-              this.span.textContent = this.n2.toString();
-            } else {
-              this.n1 = this.n1
-                ? parseInt(this.n1 + buttonText)
-                : parseInt(buttonText);
-              this.span.textContent = this.n1.toString();
-            }
+          if ("0123456789.".indexOf(buttonText) >= 0) {
+            this.operator
+              ? this.getNumber("n2", buttonText)
+              : this.getNumber("n1", buttonText);
           } else if ("+-×÷".indexOf(buttonText) >= 0) {
-            this.operation = buttonText;
+            this.n1 = this.n1 ? this.n1 : this.result;
+            this.operator = buttonText;
           } else if ("=".indexOf(buttonText) >= 0) {
-            if (this.operation === "+") {
-              this.span.textContent = (this.n1 + this.n2).toString();
-            } else if (this.operation === "-") {
-              this.span.textContent = (this.n1 - this.n2).toString();
-            } else if (this.operation === "×") {
-              this.span.textContent = (this.n1 * this.n2).toString();
-            } else if (this.operation === "÷") {
-              this.span.textContent = (this.n1 / this.n2).toFixed(1).toString();
-            }
-            this.n1 = 0;
-            this.n2 = 0;
-            this.operation = "";
+            this.result = this.removeZero(
+              this.getResult(this.n1, this.n2, this.operator)
+            );
+            this.span.textContent = this.result;
+            this.n1 = "";
+            this.n2 = "";
+            this.operator = "";
           } else if (buttonText === "clear") {
             this.span.textContent = "0";
-            this.n1 = 0;
-            this.n2 = 0;
-            this.operation = "";
+            this.n1 = "";
+            this.n2 = "";
+            this.operator = "";
+            this.result = "";
           }
         }
       });
+    }
+
+    getNumber(name: string, text: string): void {
+      this[name] += text;
+      this.span.textContent =
+        this[name].length > 12
+          ? parseFloat(this[name]).toPrecision(12)
+          : this[name];
+    }
+    removeZero(text: string) {
+      text = /\.\d+?0+$/g.test(text) ? text.replace(/0+$/g, "") : text;
+      return text
+        .replace(/\.0+$/g, "")
+        .replace(/\.0+e/, "e")
+        .replace(/0+e/, "e");
+    }
+    getResult(n1: string, n2: string, operator: string): string {
+      let numberN1: number = parseFloat(n1);
+      let numberN2: number = parseFloat(n2);
+      if (operator === "+") {
+        return (numberN1 + numberN2).toPrecision(12);
+      } else if (operator === "-") {
+        return (numberN1 - numberN2).toPrecision(12);
+      } else if (operator === "×") {
+        return (numberN1 * numberN2).toPrecision(12);
+      } else if (operator === "÷") {
+        if (numberN2 === 0) {
+          return "不是数字";
+        }
+        return (numberN1 / numberN2).toPrecision(12);
+      }
     }
   }
 

@@ -1,6 +1,10 @@
 {
     var Calculator = /** @class */ (function () {
         function Calculator() {
+            this.n1 = "";
+            this.operator = "";
+            this.n2 = "";
+            this.result = "";
             this.createContainer();
             this.createOutput();
             this.createKeys();
@@ -50,48 +54,64 @@
             this.container.addEventListener("click", function (event) {
                 if (event.target instanceof HTMLButtonElement) {
                     var buttonText = event.target.textContent;
-                    if ("0123456789".indexOf(buttonText) >= 0) {
-                        if (_this.operation) {
-                            _this.n2 = _this.n2
-                                ? parseInt(_this.n2 + buttonText)
-                                : parseInt(buttonText);
-                            _this.span.textContent = _this.n2.toString();
-                        }
-                        else {
-                            _this.n1 = _this.n1
-                                ? parseInt(_this.n1 + buttonText)
-                                : parseInt(buttonText);
-                            _this.span.textContent = _this.n1.toString();
-                        }
+                    if ("0123456789.".indexOf(buttonText) >= 0) {
+                        _this.operator
+                            ? _this.getNumber("n2", buttonText)
+                            : _this.getNumber("n1", buttonText);
                     }
                     else if ("+-×÷".indexOf(buttonText) >= 0) {
-                        _this.operation = buttonText;
+                        _this.n1 = _this.n1 ? _this.n1 : _this.result;
+                        _this.operator = buttonText;
                     }
                     else if ("=".indexOf(buttonText) >= 0) {
-                        if (_this.operation === "+") {
-                            _this.span.textContent = (_this.n1 + _this.n2).toString();
-                        }
-                        else if (_this.operation === "-") {
-                            _this.span.textContent = (_this.n1 - _this.n2).toString();
-                        }
-                        else if (_this.operation === "×") {
-                            _this.span.textContent = (_this.n1 * _this.n2).toString();
-                        }
-                        else if (_this.operation === "÷") {
-                            _this.span.textContent = (_this.n1 / _this.n2).toFixed(1).toString();
-                        }
-                        _this.n1 = 0;
-                        _this.n2 = 0;
-                        _this.operation = "";
+                        _this.result = _this.removeZero(_this.getResult(_this.n1, _this.n2, _this.operator));
+                        _this.span.textContent = _this.result;
+                        _this.n1 = "";
+                        _this.n2 = "";
+                        _this.operator = "";
                     }
                     else if (buttonText === "clear") {
                         _this.span.textContent = "0";
-                        _this.n1 = 0;
-                        _this.n2 = 0;
-                        _this.operation = "";
+                        _this.n1 = "";
+                        _this.n2 = "";
+                        _this.operator = "";
+                        _this.result = "";
                     }
                 }
             });
+        };
+        Calculator.prototype.getNumber = function (name, text) {
+            this[name] += text;
+            this.span.textContent =
+                this[name].length > 12
+                    ? parseFloat(this[name]).toPrecision(12)
+                    : this[name];
+        };
+        Calculator.prototype.removeZero = function (text) {
+            text = /\.\d+?0+$/g.test(text) ? text.replace(/0+$/g, "") : text;
+            return text
+                .replace(/\.0+$/g, "")
+                .replace(/\.0+e/, "e")
+                .replace(/0+e/, "e");
+        };
+        Calculator.prototype.getResult = function (n1, n2, operator) {
+            var numberN1 = parseFloat(n1);
+            var numberN2 = parseFloat(n2);
+            if (operator === "+") {
+                return (numberN1 + numberN2).toPrecision(12);
+            }
+            else if (operator === "-") {
+                return (numberN1 - numberN2).toPrecision(12);
+            }
+            else if (operator === "×") {
+                return (numberN1 * numberN2).toPrecision(12);
+            }
+            else if (operator === "÷") {
+                if (numberN2 === 0) {
+                    return "不是数字";
+                }
+                return (numberN1 / numberN2).toPrecision(12);
+            }
         };
         return Calculator;
     }());
