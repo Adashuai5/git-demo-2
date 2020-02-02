@@ -1,6 +1,9 @@
 import * as chai from "chai";
+import * as sinon from "sinon";
+import * as sinonChai from "sinon-chai";
 import Promise1 from "../src/promise";
 
+chai.use(sinonChai);
 const assert = chai.assert;
 
 describe("Chai 能用", () => {
@@ -27,37 +30,28 @@ describe("Chai 能用", () => {
     assert.isFunction(promise.then);
   });
   it("new Promise1(fn) 的 fn 立即执行", () => {
-    let called = false;
-    new Promise1(() => {
-      called = true;
-    });
-    // @ts-ignore
-    assert(called === true);
+    let fn = sinon.fake();
+    new Promise1(fn);
+    assert(fn.called);
   });
-  it("new Promise1(fn) 的 fn 接收 resolve 和 reject 两个函数数", () => {
-    let called = false;
+  it("new Promise1(fn) 的 fn 接收 resolve 和 reject 两个函数数", done => {
     new Promise1((resolve, reject) => {
-      called = true;
       assert.isFunction(resolve);
       assert.isFunction(reject);
+      done();
     });
-    // @ts-ignore
-    assert(called === true);
   });
   it("promise.then(success) 的 success 在 resolve 被调用时候执行", done => {
-    let called = false;
+    let success = sinon.fake();
     const promise = new Promise1((resolve, reject) => {
-      assert(called === false);
+      assert.isFalse(success.called);
       resolve();
       setTimeout(() => {
-        assert(called === true);
+        assert.isTrue(success.called);
         done();
       });
-      console.log("代码执行了");
     });
     // @ts-ignore
-    promise.then(() => {
-      called = true;
-    });
+    promise.then(success);
   });
 });
