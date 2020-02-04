@@ -17,5 +17,8 @@
     "sinon-chai": "^3.4.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "@types/node": "^13.7.0"
   }
 }
