@@ -34,14 +34,14 @@ describe("Chai 能用", () => {
     new Promise1(fn);
     assert(fn.called);
   });
-  it("new Promise1(fn) 的 fn 接收 resolve 和 reject 两个函数数", done => {
+  it("new Promise1(fn) 的 fn 接收 resolve 和 reject 两个函数数", (done) => {
     new Promise1((resolve, reject) => {
       assert.isFunction(resolve);
       assert.isFunction(reject);
       done();
     });
   });
-  it("promise.then(success) 的 success 在 resolve 被调用时候执行", done => {
+  it("promise.then(success) 的 success 在 resolve 被调用时候执行", (done) => {
     let success = sinon.fake();
     const promise = new Promise1((resolve, reject) => {
       assert.isFalse(success.called);
@@ -54,7 +54,7 @@ describe("Chai 能用", () => {
     // @ts-ignore
     promise.then(success);
   });
-  it("promise.then(success, fail) 的 fail 在 reject 被调用时候执行", done => {
+  it("promise.then(success, fail) 的 fail 在 reject 被调用时候执行", (done) => {
     let fail = sinon.fake();
     const promise = new Promise1((resolve, reject) => {
       assert.isFalse(fail.called);
@@ -68,15 +68,15 @@ describe("Chai 能用", () => {
     promise.then(null, fail);
   });
   it("2.2.1 onFulfilled 和 onRejected 都是可选的参数：", () => {
-    const promise = new Promise1(resolve => {
+    const promise = new Promise1((resolve) => {
       resolve();
     });
     promise.then(false, null);
     assert(1 === 1);
   });
-  it("2.2.2 如果 onFulfilled 是函数", done => {
+  it("2.2.2 如果 onFulfilled 是函数", (done) => {
     const succeed = sinon.fake();
-    const promise = new Promise1(resolve => {
+    const promise = new Promise1((resolve) => {
       assert.isFalse(succeed.called);
       resolve(233);
       resolve(2333);
@@ -89,7 +89,7 @@ describe("Chai 能用", () => {
     });
     promise.then(succeed);
   });
-  it("2.2.3 如果 onRejected 是函数", done => {
+  it("2.2.3 如果 onRejected 是函数", (done) => {
     const fail = sinon.fake();
     const promise = new Promise1((resolve, reject) => {
       assert.isFalse(fail.called);
@@ -104,9 +104,9 @@ describe("Chai 能用", () => {
     });
     promise.then(null, fail);
   });
-  it("2.2.4 在我的代码执行完之前，不得调用 then 后面的俩函数", done => {
+  it("2.2.4 在我的代码执行完之前，不得调用 then 后面的俩函数", (done) => {
     const succeed = sinon.fake();
-    const promise = new Promise1(resolve => {
+    const promise = new Promise1((resolve) => {
       resolve();
     });
     promise.then(succeed);
@@ -116,7 +116,7 @@ describe("Chai 能用", () => {
       done();
     }, 0);
   });
-  it("2.2.4 失败回调", done => {
+  it("2.2.4 失败回调", (done) => {
     const fail = sinon.fake();
     const promise = new Promise1((resolve, reject) => {
       reject();
@@ -128,18 +128,18 @@ describe("Chai 能用", () => {
       done();
     }, 0);
   });
-  it("2.2.5 onFulfilled 和 onRejected 必须被当做函数调用", done => {
-    const promise = new Promise1(resolve => {
+  it("2.2.5 onFulfilled 和 onRejected 必须被当做函数调用", (done) => {
+    const promise = new Promise1((resolve) => {
       resolve();
     });
-    promise.then(function() {
+    promise.then(function () {
       "use strict";
       assert(this === undefined);
       done();
     });
   });
-  it("2.2.6.1 then 可以在同一个 promise 里被多次调用", done => {
-    const promise = new Promise1(resolve => {
+  it("2.2.6.1 then 可以在同一个 promise 里被多次调用", (done) => {
+    const promise = new Promise1((resolve) => {
       resolve();
     });
     const callbacks = [sinon.fake(), sinon.fake(), sinon.fake()];
@@ -155,7 +155,7 @@ describe("Chai 能用", () => {
       done();
     });
   });
-  it("2.2.6.2 then 可以在同一个 promise 里被多次调用", done => {
+  it("2.2.6.2 then 可以在同一个 promise 里被多次调用", (done) => {
     const promise = new Promise1((resolve, reject) => {
       reject();
     });
@@ -173,7 +173,7 @@ describe("Chai 能用", () => {
     });
   });
   it("2.2.7 then 必须返回一个 promise", () => {
-    const promise = new Promise1(resolve => {
+    const promise = new Promise1((resolve) => {
       resolve();
     });
     const promise2 = promise.then(
@@ -183,8 +183,8 @@ describe("Chai 能用", () => {
     // @ts-ignore
     assert(promise2 instanceof Promise1);
   });
-  it("2.2.7.1 如果 then(success, fail) 中的 success 返回一个值 x, 运行 [[Resolve]](promise2, x) ", done => {
-    const promise1 = new Promise1(resolve => {
+  it("2.2.7.1 如果 then(success, fail) 中的 success 返回一个值 x, 运行 [[Resolve]](promise2, x) ", (done) => {
+    const promise1 = new Promise1((resolve) => {
       resolve();
     });
     promise1
@@ -192,18 +192,18 @@ describe("Chai 能用", () => {
         () => "成功",
         () => {}
       )
-      .then(result => {
+      .then((result) => {
         assert.equal(result, "成功");
         done();
       });
   });
-  it("2.2.7.1.2 success 的返回值是一个 Promise 实例", done => {
-    const promise1 = new Promise1(resolve => {
+  it("2.2.7.1.2 success 的返回值是一个 Promise 实例", (done) => {
+    const promise1 = new Promise1((resolve) => {
       resolve();
     });
     const fn = sinon.fake();
     const promise2 = promise1.then(
-      /*s1 */ () => new Promise1(resolve => resolve())
+      /*s1 */ () => new Promise1((resolve) => resolve())
     );
     promise2.then(fn);
     setTimeout(() => {
@@ -211,8 +211,8 @@ describe("Chai 能用", () => {
       done();
     });
   });
-  it("2.2.7.1.2 success 的返回值是一个 Promise 实例，且失败了", done => {
-    const promise1 = new Promise1(resolve => {
+  it("2.2.7.1.2 success 的返回值是一个 Promise 实例，且失败了", (done) => {
+    const promise1 = new Promise1((resolve) => {
       resolve();
     });
     const fn = sinon.fake();
@@ -225,14 +225,14 @@ describe("Chai 能用", () => {
       done();
     });
   });
-  it("2.2.7.1.2 fail 的返回值是一个 Promise 实例", done => {
+  it("2.2.7.1.2 fail 的返回值是一个 Promise 实例", (done) => {
     const promise1 = new Promise1((resolve, reject) => {
       reject();
     });
     const fn = sinon.fake();
     const promise2 = promise1.then(
       null,
-      () => new Promise1(resolve => resolve())
+      () => new Promise1((resolve) => resolve())
     );
     promise2.then(fn, null);
     setTimeout(() => {
@@ -240,7 +240,7 @@ describe("Chai 能用", () => {
       done();
     });
   });
-  it("2.2.7.1.2 fail 的返回值是一个 Promise 实例，且失败了", done => {
+  it("2.2.7.1.2 fail 的返回值是一个 Promise 实例，且失败了", (done) => {
     const promise1 = new Promise1((resolve, reject) => {
       reject();
     });
@@ -255,7 +255,7 @@ describe("Chai 能用", () => {
       done();
     });
   });
-  it("2.2.7.2 如果 success 抛出一个异常 e, promise2 必须被拒绝", done => {
+  it("2.2.7.2 如果 success 抛出一个异常 e, promise2 必须被拒绝", (done) => {
     const promise1 = new Promise1((resolve, reject) => {
       resolve();
     });
@@ -271,7 +271,7 @@ describe("Chai 能用", () => {
       done();
     });
   });
-  it("2.2.7.2 如果 fail 抛出一个异常 e, promise2 必须被拒绝", done => {
+  it("2.2.7.2 如果 fail 抛出一个异常 e, promise2 必须被拒绝", (done) => {
     const promise1 = new Promise1((resolve, reject) => {
       reject();
     });
