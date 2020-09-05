@@ -1,11 +1,15 @@
 class Promise2 {
   callback = [];
   state = "pending";
+  static all: (iterablePromise: any) => Promise2;
+  static allSettled: (iterablePromise: any) => Promise2;
+  static race: (iterablePromise: any) => Promise2;
+
   private resolveOrReject(state, data, i) {
     if (this.state !== "pending") return;
     this.state = state;
     nextTick(() => {
-      this.callback.forEach(handler => {
+      this.callback.forEach((handler) => {
         if (typeof handler[i] === "function") {
           let x;
           try {
@@ -60,10 +64,10 @@ class Promise2 {
   }
   private resolveWithPromise(x) {
     x.then(
-      result => {
+      (result) => {
         this.resolve(result);
       },
-      reason => {
+      (reason) => {
         this.reject(reason);
       }
     );
@@ -88,10 +92,10 @@ class Promise2 {
   private resolveWithThenable(x) {
     try {
       x.then(
-        y => {
+        (y) => {
           this.resolveWith(y);
         },
-        r => {
+        (r) => {
           this.reject(r);
         }
       );
@@ -100,6 +104,64 @@ class Promise2 {
     }
   }
 }
+
+Promise2.all = (iterablePromise) => {
+  let list = [];
+  let n = 0;
+  let hasError = false;
+  return new Promise2((resolve, reject) => {
+    for (let i = 0; i < iterablePromise.length; i++) {
+      iterablePromise[i].then(
+        (data) => {
+          list[i] = data;
+          n++;
+          n === iterablePromise.length && resolve(list);
+        },
+        (error) => {
+          !hasError && reject(error);
+          hasError = true;
+        }
+      );
+    }
+  });
+};
+
+Promise2.allSettled = function (iterablePromise) {
+  return Promise2.all(
+    ((iterablePromise) =>
+      iterablePromise.map((promise) =>
+        promise.then(
+          (value) => ({
+            status: "ok",
+            value,
+          }),
+          (reason) => ({
+            status: "not ok",
+            reason,
+          })
+        )
+      ))(iterablePromise)
+  );
+};
+
+Promise2.race = (iterablePromise) => {
+  let hasValue = false;
+  let hasError = false;
+  return new Promise2((resolve, reject) => {
+    for (let i = 0; i < iterablePromise.length; i++) {
+      iterablePromise[i].then(
+        (data) => {
+          !hasValue && !hasError && resolve(data);
+          hasValue = true;
+        },
+        (error) => {
+          !hasValue && !hasError && reject(error);
+          hasError = true;
+        }
+      );
+    }
+  });
+};
 
 export default Promise2;
 
@@ -114,7 +176,7 @@ function nextTick(fn) {
     var textNode = document.createTextNode(String(counter));
 
     observer.observe(textNode, {
-      characterData: true
+      characterData: true,
     });
 
     counter = counter + 1;
