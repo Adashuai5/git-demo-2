@@ -9,6 +9,14 @@ class DeepClone {
         let dist;
         if (source instanceof Array) {
           dist = new Array();
+        } else if (source instanceof Function) {
+          dist = function () {
+            return source.apply(this.arguments);
+          };
+        } else if (source instanceof RegExp) {
+          dist = new RegExp(source.source, source.flags);
+        } else if (source instanceof Date) {
+          dist = new Date(source);
         } else {
           dist = new Object();
         }
@@ -21,7 +29,7 @@ class DeepClone {
         }
       }
     }
-    return source
+    return source;
   }
   findSource(source) {
     for (let i = 0; i < cache.length; i++) {
